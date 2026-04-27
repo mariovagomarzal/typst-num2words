@@ -22,13 +22,7 @@
   let value-type = type(value)
   assert(
     value-type == expected-type,
-    message: _prefix(lang)
-      + ": expected "
-      + str(expected-type)
-      + " for '"
-      + param
-      + "', got "
-      + str(value-type),
+    message: _prefix(lang) + ": expected " + str(expected-type) + " for '" + param + "', got " + str(value-type),
   )
 }
 
@@ -74,11 +68,6 @@
   }
   assert(
     in-range,
-    message: _prefix(lang)
-      + ": number "
-      + str(number)
-      + " is out of range ("
-      + range-str
-      + ")",
+    message: _prefix(lang) + ": number " + str(number) + " is out of range (" + range-str + ")",
   )
 }
