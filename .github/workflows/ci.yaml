@@ -34,10 +34,12 @@ jobs:
         run: devenv shell -- just test
       - name: Build the manual
         run: devenv shell -- just docs
+      - name: Prepare Pages artifact
+        run: mkdir -p _site && cp docs/manual.pdf _site/
       - name: Upload the manual as a GitHub Pages artifact
         uses: actions/upload-pages-artifact@7b1f4a764d45c48632c6b24a0339c27f5614fb0b # v4.0.0
         with:
-          path: docs/manual.pdf
+          path: _site/
   publish:
     needs: ci
     runs-on: ubuntu-latest
