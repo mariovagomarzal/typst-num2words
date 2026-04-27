@@ -1,0 +1,6 @@
+= Supported languages <chp:supported-languages>
+
+This chapter lists every supported language along with its available options, supported forms, and other
+language-specific features.
+
+#include "langs/en.typ"

@@ -12,7 +12,18 @@
     })
   ];
 
-  languages.typst.enable = true;
+  languages.typst = {
+    enable = true;
+    fontPaths = [
+      "${pkgs.gyre-fonts}"
+      "${pkgs.liberation_ttf}"
+    ];
+  };
+
+  env = {
+    TYPST_ROOT = ".";
+    TYPST_IGNORE_SYSTEM_FONTS = "true";
+  };
 
   packages = with pkgs; [
     just
