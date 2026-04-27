@@ -4,6 +4,8 @@ A Typst package that converts numbers to their written word form.
 
 ## Usage
 
+Check out the [package manual][manual] for detailed documentation. Here's a quick example:
+
 ```typst
 #import "@preview/num2words:0.1.0": num2words
 
@@ -65,6 +67,7 @@ This project is licensed under the GNU Lesser General Public License v3.0. See t
 
 <!-- External links -->
 
+[manual]: https://mariovagomarzal.github.io/typst-num2words/manual.pdf
 [typst]: https://typst.app/
 [issues]: https://github.com/mariovagomarzal/typst-num2words/issues
 [devenv]: https://devenv.sh/
