@@ -8,3 +8,6 @@ devenv.local.yaml
 
 # direnv
 .direnv
+
+# Docs PDF documents
+docs/*.pdf
