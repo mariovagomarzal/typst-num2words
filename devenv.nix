@@ -1,5 +1,16 @@
-{pkgs, ...}: {
+{
+  pkgs,
+  inputs,
+  ...
+}: {
   env.GREET = "Typst num2words development environment";
+
+  overlays = [
+    (final: prev: {
+      # Add Tytanic to Nixpkgs.
+      tytanic = inputs.tytanic.packages.${final.system}.default;
+    })
+  ];
 
   languages.typst.enable = true;
 
@@ -8,6 +19,7 @@
     git
     prek
     alejandra
+    tytanic
   ];
 
   enterShell = ''

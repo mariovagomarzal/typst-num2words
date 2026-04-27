@@ -1,4 +1,5 @@
-# yaml-language-server: $schema=https://devenv.sh/devenv.schema.json
 inputs:
   nixpkgs:
     url: github:cachix/devenv-nixpkgs/rolling
+  tytanic:
+    url: github:typst-community/tytanic/v0.3.3
