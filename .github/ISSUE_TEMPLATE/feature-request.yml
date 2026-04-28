@@ -1,0 +1,43 @@
+name: Feature Request
+description: Suggest a new feature or improvement
+labels: ["enhancement"]
+body:
+  - type: dropdown
+    id: scope
+    attributes:
+      label: Is this specific to a language?
+      options:
+        - "No, it's a general feature"
+        - "Yes (please specify the language below)"
+    validations:
+      required: true
+  - type: input
+    id: language
+    attributes:
+      label: Language (if applicable)
+      description: >-
+        If this request is language-specific, specify the language and its code.
+      placeholder: "e.g., English (en)"
+    validations:
+      required: false
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: A clear description of the feature you'd like.
+    validations:
+      required: true
+  - type: textarea
+    id: motivation
+    attributes:
+      label: Use case / motivation
+      description: Why would this feature be useful? What problem does it solve?
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: Any other information, examples, or screenshots.
+    validations:
+      required: false

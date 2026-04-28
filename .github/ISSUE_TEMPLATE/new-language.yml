@@ -1,0 +1,29 @@
+name: New Language Request
+description: Request support for a new language
+labels: ["new-language"]
+body:
+  - type: input
+    id: language
+    attributes:
+      label: Language
+      description: >-
+        The language you'd like to see supported, including its ISO 639-1 code.
+      placeholder: "e.g., Spanish (es)"
+    validations:
+      required: true
+  - type: textarea
+    id: details
+    attributes:
+      label: Language details
+      description: >-
+        Describe the desired forms (cardinal, ordinal, year, etc.), particularities of the language, and any useful
+        references (specifications, grammar rules, or other resources).
+    validations:
+      required: false
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: Any other information that might be helpful.
+    validations:
+      required: false
