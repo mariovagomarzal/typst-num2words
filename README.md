@@ -7,7 +7,7 @@ A Typst package that converts numbers to their written word form.
 Check out the [package manual][manual] for detailed documentation. Here's a quick example:
 
 ```typst
-#import "@preview/num2words:0.1.0": num2words
+#import "@preview/num2words:0.2.0": num2words
 
 // Auto-detection from `text.lang`
 #set text(lang: "en")

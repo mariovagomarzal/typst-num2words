@@ -9,7 +9,7 @@ it, import the package and call the function with a number:
 
 #example[
   ```typ
-  #import "@preview/num2words:0.1.0": num2words
+  #import "@preview/num2words:0.2.0": num2words
 
   #num2words(42)
   ```
