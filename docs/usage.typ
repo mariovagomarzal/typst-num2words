@@ -56,3 +56,34 @@ As shown in previous examples, you can also pass the language code explicitly --
 ```example
 #num2words(100, lang: "en") / #num2words(100, lang: "es")
 ```
+
+== Fallback
+
+The optional #arg("fallback") argument controls what @cmd:num2words does when the requested language is not
+supported. By default it is #typ.t.none, which produces an empty result silently:
+
+```example
+[#num2words(100, lang: "xx")]
+```
+
+As a string or array of strings, each code is tried in order:
+
+```example
+#num2words(100, lang: "xx", fallback: ("es", "en"))
+```
+
+A #typ.t.none entry inside the chain has the same meaning as the default — return an empty result if reached:
+
+```example
+[#num2words(100, lang: "xx", fallback: ("yy", none))]
+```
+
+To opt into strict behavior (panic on unsupported language), pass an empty chain:
+
+#example[
+  ```typ
+  #num2words(100, lang: "xx", fallback: ())
+  ```
+][
+  `num2words: no supported language in fallback chain (tried: 'xx')`
+]
