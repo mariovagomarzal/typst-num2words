@@ -185,30 +185,60 @@
 /// Supported forms for this language module.
 #let _supported-forms = ("cardinal", "ordinal")
 
+/// Supported gender values.
+#let _supported-genders = ("masculine", "feminine")
+
+// Gender / apocope helpers.
+
+/// Returns the feminine form of a cardinal unit word (0–29). Only "uno" and
+/// "veintiuno" inflect; words like "cuatro" or "ocho" end in "o" but are
+/// invariable, so the match is on the "uno" suffix specifically.
+#let _feminine-unit(word) = if word.ends-with("uno") { word.slice(0, -1) + "a" } else { word }
+
+/// Returns the feminine form of a hundreds word. "ciento" is invariable when
+/// used as a combiner; "doscientos"…"novecientos" become "doscientas"…"novecientas".
+#let _feminine-hundred(word) = if word.ends-with("os") { word.slice(0, -2) + "as" } else { word }
+
+/// Feminizes every word in a (possibly multi-word) ordinal expression. Every
+/// supported ordinal ends in "o", which is replaced by "a".
+#let _feminine-ordinal(words) = words.split(" ").map(w => w.slice(0, -1) + "a").join(" ")
+
+/// Returns the apocopated form of a (possibly compound) ordinal: "primero"/
+/// "tercero" suffixes drop their final "o". Other ordinals are unchanged.
+#let _apocopate-ordinal(word) = if word.ends-with("primero") or word.ends-with("tercero") {
+  word.slice(0, -1)
+} else {
+  word
+}
+
 // Cardinal helpers.
 
-/// Converts a number in the range 1–99 to its cardinal word form. When
-/// `apocopate` is true and the number ends in "uno"/"veintiuno", the trailing
-/// unit uses the apocopated form ("un"/"veintiún").
+/// Converts a number in the range 1–99 to its cardinal word form. The
+/// `apocopate` and `feminine` flags control the form of a trailing
+/// "uno"/"veintiuno": apocopated ("un"/"veintiún"), feminine ("una"/"veintiuna"),
+/// or default masculine. `apocopate` takes precedence (used before "mil").
 ///
 /// - number (int): The number to convert (1–99).
 /// - apocopate (bool): Whether to apocopate a trailing "uno".
+/// - feminine (bool): Whether to use the feminine form.
 /// -> str
-#let _convert-below-100(number, apocopate: false) = {
+#let _convert-below-100(number, apocopate: false, feminine: false) = {
+  let unit-word(i) = if apocopate {
+    _units-apocopated.at(i)
+  } else if feminine {
+    _feminine-unit(_units.at(i))
+  } else {
+    _units.at(i)
+  }
   if number < 30 {
-    if apocopate { _units-apocopated.at(number) } else { _units.at(number) }
+    unit-word(number)
   } else {
     let tens-digit = calc.quo(number, 10)
     let units-digit = calc.rem(number, 10)
     if units-digit == 0 {
       _tens.at(tens-digit - 3)
     } else {
-      let unit-word = if apocopate {
-        _units-apocopated.at(units-digit)
-      } else {
-        _units.at(units-digit)
-      }
-      _tens.at(tens-digit - 3) + " y " + unit-word
+      _tens.at(tens-digit - 3) + " y " + unit-word(units-digit)
     }
   }
 }
@@ -219,22 +249,25 @@
 ///
 /// - number (int): The number to convert (1–999).
 /// - apocopate (bool): Whether to apocopate a trailing "uno".
+/// - feminine (bool): Whether to use feminine forms for "uno" and the hundreds
+///   200–900. "cien"/"ciento" are invariable.
 /// -> str
-#let _convert-below-1000(number, apocopate: false) = {
+#let _convert-below-1000(number, apocopate: false, feminine: false) = {
   if number < 100 {
-    _convert-below-100(number, apocopate: apocopate)
+    _convert-below-100(number, apocopate: apocopate, feminine: feminine)
   } else {
     let hundreds-digit = calc.quo(number, 100)
     let remainder = calc.rem(number, 100)
     let hundreds-word = if hundreds-digit == 1 and remainder == 0 {
       "cien"
     } else {
-      _hundreds.at(hundreds-digit)
+      let masc = _hundreds.at(hundreds-digit)
+      if feminine { _feminine-hundred(masc) } else { masc }
     }
     if remainder == 0 {
       hundreds-word
     } else {
-      hundreds-word + " " + _convert-below-100(remainder, apocopate: apocopate)
+      hundreds-word + " " + _convert-below-100(remainder, apocopate: apocopate, feminine: feminine)
     }
   }
 }
@@ -248,18 +281,32 @@
 /// - number (int): The number to convert (1–999_999).
 /// - apocopate-units (bool): Whether the units part should apocopate (true
 ///   when a scale noun like "millón" follows this 6-digit group).
+/// - feminine (bool): Whether the chunk modifies a feminine noun. Affects the
+///   thousands part (e.g. "veintiuna mil personas") and the units part when no
+///   scale word follows; ignored for units when `apocopate-units` is true,
+///   since scale nouns (millón, billón…) are masculine.
 /// -> str
-#let _convert-below-million(number, apocopate-units: false) = {
+#let _convert-below-million(number, apocopate-units: false, feminine: false) = {
   let thousands = calc.quo(number, 1000)
   let units = calc.rem(number, 1000)
   let parts = ()
   if thousands == 1 {
     parts.push("mil")
   } else if thousands > 1 {
-    parts.push(_convert-below-1000(thousands, apocopate: true) + " mil")
+    let thousands-word = if feminine {
+      _convert-below-1000(thousands, feminine: true)
+    } else {
+      _convert-below-1000(thousands, apocopate: true)
+    }
+    parts.push(thousands-word + " mil")
   }
   if units > 0 {
-    parts.push(_convert-below-1000(units, apocopate: apocopate-units))
+    let units-word = if apocopate-units {
+      _convert-below-1000(units, apocopate: true)
+    } else {
+      _convert-below-1000(units, feminine: feminine)
+    }
+    parts.push(units-word)
   }
   parts.join(" ")
 }
@@ -269,19 +316,26 @@
 ///
 /// - number (int): The remaining number to convert.
 /// - scale-index (int): The current scale index (0 = bottom group, 1 = millones, …).
+/// - feminine (bool): Whether the overall number modifies a feminine noun.
+///   Only the bottom chunk (scale-index 0) inherits the gender, since scale
+///   words (millón, billón…) are masculine and impose their own agreement.
 /// -> array
-#let _chunk-and-convert(number, scale-index) = {
+#let _chunk-and-convert(number, scale-index, feminine: false) = {
   if number == 0 {
     ()
   } else {
     errors.out-of-range(scale-index, max: _scales-singular.len() - 1, lang: _lang-code)
     let chunk = calc.rem(number, 1000000)
     let rest = calc.quo(number, 1000000)
-    let higher = _chunk-and-convert(rest, scale-index + 1)
+    let higher = _chunk-and-convert(rest, scale-index + 1, feminine: feminine)
     if chunk == 0 {
       higher
     } else {
-      let words = _convert-below-million(chunk, apocopate-units: scale-index > 0)
+      let words = _convert-below-million(
+        chunk,
+        apocopate-units: scale-index > 0,
+        feminine: feminine and scale-index == 0,
+      )
       if scale-index > 0 {
         let scale-word = if chunk == 1 {
           _scales-singular.at(scale-index)
@@ -298,9 +352,10 @@
 /// Converts a positive integer to its cardinal word form.
 ///
 /// - number (int): The number to convert (>= 1).
+/// - feminine (bool): Whether the number modifies a feminine noun.
 /// -> str
-#let _convert-cardinal(number) = {
-  _chunk-and-convert(number, 0).join(" ")
+#let _convert-cardinal(number, feminine: false) = {
+  _chunk-and-convert(number, 0, feminine: feminine).join(" ")
 }
 
 // Ordinal helpers.
@@ -332,14 +387,19 @@
   }
 }
 
-/// Converts a positive integer in the range 1–999 to its ordinal word form
-/// (masculine, non-apocopated). Panics if `number` is outside [1, 999].
+/// Converts a positive integer in the range 1–999 to its ordinal word form.
+/// Panics if `number` is outside [1, 999]. The masculine form is built first
+/// and then transformed: `apocopated` drops the final "o" of a trailing
+/// "primero"/"tercero"; `feminine` swaps the final "o" of every word for "a".
 ///
 /// - number (int): The number to convert (1–999).
+/// - feminine (bool): Whether to return the feminine form.
+/// - apocopated (bool): Whether to return the apocopated form (masculine only;
+///   the public entry point rejects the feminine combination).
 /// -> str
-#let _convert-ordinal(number) = {
+#let _convert-ordinal(number, feminine: false, apocopated: false) = {
   errors.out-of-range(number, min: 1, max: 999, lang: _lang-code)
-  if number < 100 {
+  let masculine = if number < 100 {
     _convert-ordinal-below-100(number)
   } else {
     let hundreds-digit = calc.quo(number, 100)
@@ -350,24 +410,65 @@
       _ord-hundreds.at(hundreds-digit) + " " + _convert-ordinal-below-100(remainder)
     }
   }
+  if apocopated {
+    _apocopate-ordinal(masculine)
+  } else if feminine {
+    _feminine-ordinal(masculine)
+  } else {
+    masculine
+  }
 }
 
 // Public entry point.
 
 /// Converts a number to its Spanish word form.
 ///
-/// Cardinals are returned in masculine form across the full long-scale range.
-/// Ordinals are returned in masculine, non-apocopated form within the closed
-/// range [1, 999]; values outside that range panic with an out-of-range error.
+/// Cardinals are returned across the full long-scale range. Ordinals are
+/// supported within the closed range [1, 999]; values outside that range panic
+/// with an out-of-range error.
+///
+/// `gender` controls grammatical agreement: with `"feminine"`, cardinals
+/// produce forms like "una", "veintiuna", "doscientas" (and "veintiuna mil
+/// personas"); ordinals end in "-a". Scale nouns (mil, millón, billón…) are
+/// invariable and stay masculine.
+///
+/// `apocopated` is only available for ordinals in masculine. It produces the
+/// short form used before a noun: "primer", "tercer", "vigésimo primer",
+/// "decimotercer". Combining `apocopated: true` with `gender: "feminine"`
+/// panics, since Spanish has no feminine apocopated ordinal.
 ///
 /// - number (int): The number to convert.
 /// - form (str): The form: `"cardinal"` (default) or `"ordinal"`.
+/// - gender (str): `"masculine"` (default) or `"feminine"`.
+/// - apocopated (bool): Use the apocopated ordinal form. Ordinal + masculine only.
 /// - negative (str): The prefix for negative numbers (default: `"menos"`).
 /// -> str
-#let convert(number, form: "cardinal", negative: "menos") = {
+#let convert(
+  number,
+  form: "cardinal",
+  gender: "masculine",
+  apocopated: false,
+  negative: "menos",
+) = {
   errors.assert-type("form", str, form, lang: _lang-code)
-  errors.assert-form(form, _supported-forms, _lang-code)
+  errors.assert-option("form", form, _supported-forms, lang: _lang-code)
+  errors.assert-type("gender", str, gender, lang: _lang-code)
+  errors.assert-option("gender", gender, _supported-genders, lang: _lang-code)
+  errors.assert-type("apocopated", bool, apocopated, lang: _lang-code)
   errors.assert-type("negative", str, negative, lang: _lang-code)
+
+  let feminine = gender == "feminine"
+
+  if apocopated {
+    assert(
+      form == "ordinal",
+      message: "num2words (es): 'apocopated' is only available for ordinals",
+    )
+    assert(
+      not feminine,
+      message: "num2words (es): 'apocopated' is not available for feminine gender",
+    )
+  }
 
   if number == 0 and form == "cardinal" {
     "cero"
@@ -375,9 +476,9 @@
     let prefix = if number < 0 { negative + " " } else { "" }
     let abs-number = calc.abs(number)
     let result = if form == "cardinal" {
-      _convert-cardinal(abs-number)
+      _convert-cardinal(abs-number, feminine: feminine)
     } else {
-      _convert-ordinal(abs-number)
+      _convert-ordinal(abs-number, feminine: feminine, apocopated: apocopated)
     }
     prefix + result
   }

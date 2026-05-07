@@ -76,6 +76,53 @@
   form: "cardinal",
 )
 
+// Cardinals — feminine.
+#check(
+  convert,
+  (
+    // Basic units: only "uno"/"veintiuno" change.
+    (1, "una"),
+    (2, "dos"),
+    (10, "diez"),
+    (16, "dieciséis"),
+    (21, "veintiuna"),
+    (22, "veintidós"),
+    (29, "veintinueve"),
+    // Tens with trailing "uno".
+    (31, "treinta y una"),
+    (41, "cuarenta y una"),
+    (45, "cuarenta y cinco"),
+    (91, "noventa y una"),
+    // Hundreds: "cien"/"ciento" invariable, 200–900 take "-cientas".
+    (100, "cien"),
+    (101, "ciento una"),
+    (121, "ciento veintiuna"),
+    (200, "doscientas"),
+    (231, "doscientas treinta y una"),
+    (500, "quinientas"),
+    (900, "novecientas"),
+    (999, "novecientas noventa y nueve"),
+    // Thousands: full feminine forms before "mil" (no apocopation).
+    (1000, "mil"),
+    (1001, "mil una"),
+    (21000, "veintiuna mil"),
+    (31000, "treinta y una mil"),
+    (101000, "ciento una mil"),
+    (200000, "doscientas mil"),
+    (200500, "doscientas mil quinientas"),
+    // Millions: scale words are masculine and invariable; only the bottom
+    // chunk inherits the feminine flag.
+    (1000000, "un millón"),
+    (1000001, "un millón una"),
+    (1000500, "un millón quinientas"),
+    (2000000, "dos millones"),
+    (21000000, "veintiún millones"),
+    (100000500, "cien millones quinientas"),
+  ),
+  form: "cardinal",
+  gender: "feminine",
+)
+
 // Ordinals.
 #check(
   convert,
@@ -114,4 +161,65 @@
     (-1, "menos primero"),
   ),
   form: "ordinal",
+)
+
+// Ordinals — feminine.
+#check(
+  convert,
+  (
+    (1, "primera"),
+    (2, "segunda"),
+    (3, "tercera"),
+    (7, "séptima"),
+    (10, "décima"),
+    (11, "undécima"),
+    (12, "duodécima"),
+    (13, "decimotercera"),
+    (18, "decimoctava"),
+    (20, "vigésima"),
+    (21, "vigésima primera"),
+    (23, "vigésima tercera"),
+    (100, "centésima"),
+    (101, "centésima primera"),
+    (999, "noningentésima nonagésima novena"),
+    (-1, "menos primera"),
+  ),
+  form: "ordinal",
+  gender: "feminine",
+)
+
+// Ordinals — apocopated (masculine only).
+#check(
+  convert,
+  (
+    (1, "primer"),
+    (2, "segundo"),
+    (3, "tercer"),
+    (4, "cuarto"),
+    (10, "décimo"),
+    (11, "undécimo"),
+    (12, "duodécimo"),
+    (13, "decimotercer"),
+    (14, "decimocuarto"),
+    (18, "decimoctavo"),
+    (21, "vigésimo primer"),
+    (23, "vigésimo tercer"),
+    (24, "vigésimo cuarto"),
+    (100, "centésimo"),
+    (101, "centésimo primer"),
+    (103, "centésimo tercer"),
+    (200, "ducentésimo"),
+  ),
+  form: "ordinal",
+  apocopated: true,
+)
+
+// Special errors.
+#assert.eq(
+  catch(() => convert(1, form: "ordinal", apocopated: true, gender: "feminine")),
+  "assertion failed: num2words (es): 'apocopated' is not available for feminine gender",
+)
+#assert.eq(
+  catch(() => convert(1, apocopated: true)),
+  "assertion failed: num2words (es): 'apocopated' is only available for ordinals",
 )

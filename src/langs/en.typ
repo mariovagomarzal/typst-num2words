@@ -246,7 +246,7 @@
 /// -> str
 #let convert(number, form: "cardinal", negative: "negative") = {
   errors.assert-type("form", str, form, lang: _lang-code)
-  errors.assert-form(form, _supported-forms, _lang-code)
+  errors.assert-option("form", form, _supported-forms, lang: _lang-code)
   errors.assert-type("negative", str, negative, lang: _lang-code)
 
   if number == 0 {
