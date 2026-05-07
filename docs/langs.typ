@@ -6,3 +6,5 @@ language-specific features.
 #include "langs/en.typ"
 
 #include "langs/es.typ"
+
+#include "langs/ca.typ"

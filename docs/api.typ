@@ -32,3 +32,7 @@
 === Spanish
 
 #show-lang-module("es")
+
+=== Catalan
+
+#show-lang-module("ca")
