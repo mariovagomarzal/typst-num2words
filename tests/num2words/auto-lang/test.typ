@@ -6,3 +6,9 @@
 #num2words(0)
 #num2words(42)
 #num2words(-1)
+
+#set text(lang: "es")
+
+#num2words(0)
+#num2words(42)
+#num2words(-1)
