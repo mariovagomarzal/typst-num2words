@@ -4,3 +4,5 @@ This chapter lists every supported language along with its available options, su
 language-specific features.
 
 #include "langs/en.typ"
+
+#include "langs/es.typ"
