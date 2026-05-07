@@ -1,9 +1,12 @@
 /// Typst num2words: convert numbers to their written word form.
-
 #import "errors.typ"
 #import "langs/en.typ"
+#import "langs/es.typ"
 
-#let converters = (en: en.convert)
+#let converters = (
+  en: en.convert,
+  es: es.convert,
+)
 
 /// Converts a number to its written word form.
 ///
