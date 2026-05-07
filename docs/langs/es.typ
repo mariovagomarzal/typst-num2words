@@ -20,7 +20,7 @@ Language code: `"es"`.
 ==== Cardinal
 
 The default form. Converts numbers to their cardinal word representation, using the long-scale convention ($10^9$ is
-`mil millones`, $10^{12}$ is `billón`, etc.).
+`mil millones`, $10^(12)$ is `billón`, etc.).
 
 ```example
 #num2words(42, lang: "es")

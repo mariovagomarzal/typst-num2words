@@ -20,7 +20,7 @@ Language code: `"ca"`.
 ==== Cardinal
 
 The default form. Converts numbers to their cardinal word representation, using the long-scale convention ($10^9$ is
-`mil milions`, $10^{12}$ is `bilió`, etc.) and the IEC 2017 hyphenation rules within each hundreds–tens–units block.
+`mil milions`, $10^(12)$ is `bilió`, etc.) and the IEC 2017 hyphenation rules within each hundreds–tens–units block.
 
 ```example
 #num2words(42, lang: "ca")
