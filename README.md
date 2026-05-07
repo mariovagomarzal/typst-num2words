@@ -9,23 +9,35 @@ Check out the [package manual][manual] for detailed documentation. Here's a quic
 ```typst
 #import "@preview/num2words:0.1.0": num2words
 
-// Uses the current text language (auto-detection)
+// Auto-detection from `text.lang`
+#set text(lang: "en")
 #num2words(42) // "forty-two"
 
-// Explicit language code
+#set text(lang: "es")
+#num2words(42) // "cuarenta y dos"
+
+// Explicit language code overrides `text.lang`
 #num2words(100, lang: "en") // "one hundred"
+#num2words(100, lang: "es") // "cien"
+
+// Some languages have different number forms
+#num2words(1, lang: "en", form: "ordinal") // "first"
+#num2words(1, lang: "es", form: "ordinal") // "primero"
 ```
 
-The `num2words` function accepts:
+The `num2words` function _always_ accepts:
 
 - `number` (int) — the number to convert.
 - `lang` (str or auto) — the language code. When `auto` (the default), uses the current `text.lang`.
+
+Other langugages might support additional parameters.
 
 ## Supported languages
 
 | Language | Code |
 | --- | --- |
 | English (US) | `en` |
+| Spanish | `es` |
 
 More languages are planned. Contributions are welcome!
 

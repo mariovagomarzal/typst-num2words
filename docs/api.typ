@@ -7,7 +7,11 @@
   ..tidy-args.named(),
 )
 
-#let show-lang-module(lang-code, ..tidy-args) = show-module("langs/" + lang-code, ..tidy-args)
+#let show-lang-module(lang-code, ..tidy-args) = show-module(
+  "langs/" + lang-code,
+  module: lang-code,
+  ..tidy-args.named(),
+)
 
 = API reference
 
@@ -24,3 +28,7 @@
 === English (US)
 
 #show-lang-module("en")
+
+=== Spanish
+
+#show-lang-module("es")

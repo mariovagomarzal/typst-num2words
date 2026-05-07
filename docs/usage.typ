@@ -44,12 +44,15 @@ document's current `text.lang` setting:
 
 ```example
 #set text(lang: "en")
-
 The number 100 is written as #num2words(100).
+
+#set text(lang: "es")
+El número 100 se escribe #num2words(100).
 ```
 
-As shown in previous examples, you can also pass the language code explicitly:
+As shown in previous examples, you can also pass the language code explicitly --- this overrides the document's
+`text.lang`:
 
 ```example
-#num2words(100, lang: "en")
+#num2words(100, lang: "en") / #num2words(100, lang: "es")
 ```

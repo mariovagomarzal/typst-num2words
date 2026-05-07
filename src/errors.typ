@@ -37,15 +37,17 @@
   )
 }
 
-/// Asserts that a form is supported by a language.
+/// Asserts that a parameter value is among a set of supported values. Used for
+/// any option with a finite set of valid choices (e.g. `form`, `gender`).
 ///
-/// - form (str): The form to check.
-/// - supported (array, dictionary): The supported forms (array of strings or dictionary with form keys).
-/// - lang (str): The language code.
-#let assert-form(form, supported, lang) = {
+/// - param (str): The parameter name.
+/// - value (any): The value to check.
+/// - supported (array, dictionary): The supported values (array, or dictionary whose keys are the supported values).
+/// - lang (str, none): The language code, or `none` for the top-level function.
+#let assert-option(param, value, supported, lang: none) = {
   assert(
-    form in supported,
-    message: _prefix(lang) + ": unsupported form '" + form + "'",
+    value in supported,
+    message: _prefix(lang) + ": unsupported value '" + str(value) + "' for '" + param + "'",
   )
 }
 

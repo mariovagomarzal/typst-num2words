@@ -4,7 +4,7 @@
 /// The language code for this module.
 #let _lang-code = "en"
 
-// -- Data tables --
+// Data tables.
 
 /// Words for numbers 0–19.
 #let _units = (
@@ -82,7 +82,7 @@
 /// Supported forms for this language module.
 #let _supported-forms = ("cardinal", "ordinal", "year")
 
-// -- Cardinal helpers --
+// Cardinal helpers.
 
 /// Converts a number in the range 1–99 to its cardinal word form.
 ///
@@ -154,7 +154,7 @@
   _chunk-and-convert(number, 0).join(" ")
 }
 
-// -- Ordinal helpers --
+// Ordinal helpers.
 
 /// Converts a single cardinal word to its ordinal form.
 ///
@@ -208,7 +208,7 @@
   _cardinal-to-ordinal(cardinal)
 }
 
-// -- Year helpers --
+// Year helpers.
 
 /// Converts a positive integer to its year reading form.
 ///
@@ -236,7 +236,7 @@
   }
 }
 
-// -- Public entry point --
+// Public entry point.
 
 /// Converts a number to its English word form.
 ///
@@ -246,7 +246,7 @@
 /// -> str
 #let convert(number, form: "cardinal", negative: "negative") = {
   errors.assert-type("form", str, form, lang: _lang-code)
-  errors.assert-form(form, _supported-forms, _lang-code)
+  errors.assert-option("form", form, _supported-forms, lang: _lang-code)
   errors.assert-type("negative", str, negative, lang: _lang-code)
 
   if number == 0 {
