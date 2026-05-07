@@ -38,6 +38,7 @@ Other langugages might support additional parameters.
 | --- | --- |
 | English (US) | `en` |
 | Spanish | `es` |
+| Catalan | `ca` |
 
 More languages are planned. Contributions are welcome!
 
