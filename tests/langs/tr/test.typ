@@ -53,6 +53,11 @@
     (1234567, "bir milyon iki yüz otuz dört bin beş yüz altmış yedi"),
     (1000000000, "bir milyar"),
     (1000000000000, "bir trilyon"),
+    // The thousands group drops "bir", even below a higher scale word.
+    (1001000, "bir milyon bin"),
+    (2001000, "iki milyon bin"),
+    (1000001000, "bir milyar bin"),
+    (1001001, "bir milyon bin bir"),
     // Negative numbers.
     (-1, "eksi bir"),
     (-42, "eksi kırk iki"),
@@ -66,11 +71,11 @@
 #check(
   convert,
   (
-    // Irregulars.
+    // Zero, and the "t" to "d" alternation.
     (0, "sıfırıncı"),
     (4, "dördüncü"),
     (14, "on dördüncü"),
-    // Regular.
+    // Vowel harmony.
     (1, "birinci"),
     (2, "ikinci"),
     (3, "üçüncü"),

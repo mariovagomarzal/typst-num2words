@@ -59,11 +59,6 @@
   "vigintilyon",
 )
 
-/// Cardinal words whose ordinal form is irregular.
-#let _ordinal-irregulars = (
-  // All ordinals in Turkish are regular!
-)
-
 /// Supported forms for this language module.
 #let _supported-forms = ("cardinal", "ordinal", "year")
 
@@ -99,12 +94,15 @@
     let remainder = calc.rem(number, 100)
 
     // Exception: "100" = "yüz" but not "bir yüz"
-    let hundreds-part = if hundreds-digit == 1 {
-      ""
-    } else {
-      _units.at(hundreds-digit) + " "
-    } + "yüz"
-    
+    let hundreds-part = (
+      if hundreds-digit == 1 {
+        ""
+      } else {
+        _units.at(hundreds-digit) + " "
+      }
+        + "yüz"
+    )
+
     if remainder == 0 {
       hundreds-part
     } else {
@@ -123,19 +121,20 @@
   if number == 0 {
     ()
   } else {
+    errors.out-of-range(scale-index, max: _scales.len() - 1, lang: _lang-code)
     let chunk = calc.rem(number, 1000)
     let rest = calc.quo(number, 1000)
-    let higher = if rest == 1 and scale-index == 0 {
-      ("bin", ) // Exception: "1000" = "bin" but not "bir bin"
-    } else {
-      _chunk-and-convert(rest, scale-index + 1)
-    }
+    let higher = _chunk-and-convert(rest, scale-index + 1)
     if chunk == 0 {
       higher
     } else {
-      let words = _convert-below-1000(chunk)
-      if scale-index > 0 {
-        words = words + " " + _scales.at(scale-index)
+      // Exception: the thousands group drops "bir", so 1000 is "bin" and not "bir bin".
+      let words = if scale-index == 1 and chunk == 1 {
+        _scales.at(1)
+      } else if scale-index > 0 {
+        _convert-below-1000(chunk) + " " + _scales.at(scale-index)
+      } else {
+        _convert-below-1000(chunk)
       }
       higher + (words,)
     }
@@ -152,9 +151,11 @@
 
 // Ordinal helpers.
 
-#let vowels = "aeıioöuü"
+/// The vowels of the Turkish alphabet.
+#let _vowels = "aeıioöuü"
 
-#let ordinal-vowel-dict = (
+/// The suffix vowel required by each possible last vowel of a cardinal, following vowel harmony.
+#let _ordinal-vowels = (
   "a": "ı",
   "e": "i",
   "ı": "ı",
@@ -172,48 +173,28 @@
 /// -> str
 #let _cardinal-to-ordinal(cardinal) = {
   let all-letters = cardinal.clusters()
-  let length = all-letters.len()
   let last-letter = all-letters.last()
 
-  // Convert last letter to "d" if it is "t":
-  // "dört" --> "dörd" --> dördüncü
+  // Alternation: a final "t" becomes "d", so "dört" gives "dörd" and then "dördüncü".
   if last-letter == "t" {
-    let root = all-letters.slice(0, -1).join() // All letters except the last letter
-    cardinal = root + "d"
+    cardinal = all-letters.slice(0, -1).join() + "d"
   }
 
-  let ends-with-vowel = last-letter in vowels
+  let ends-with-vowel = last-letter in _vowels
+  let last-vowel = all-letters.rev().find(letter => letter in _vowels)
+  let ordinal-vowel = _ordinal-vowels.at(last-vowel)
 
-  // Find the last vowel in the cardinal:
-  let last-vowel = ""
-
-  let ndx = length - 1
-  let flag = true
-
-  while ndx >= 0 and flag {
-    let letter = all-letters.at(ndx)
-    if vowels.contains(letter) {
-      last-vowel = letter
-      flag = false
+  // The suffix vowel comes from vowel harmony, and is repeated before "nc" only when the cardinal ends in a
+  // consonant: "iki" gives "ikinci", but "bir" gives "birinci" and "altı" gives "altıncı".
+  let ordinal-part = (
+    if ends-with-vowel {
+      ""
+    } else {
+      ordinal-vowel
     }
-    ndx -= 1
-  }
-
-  let ordinal-vowel = ordinal-vowel-dict.at(last-vowel)
-
-  // Compute the ordinal suffix based on whether the cardinal ends with a vowel or consonant.
-  // Based on the last vowel, we determine the appropriate vowel for the suffix.
-  // bir --> birinci
-  // iki --> ikinci
-  // üç --> üçüncü
-  // dört --> dördüncü (note: we already handled the "t" to "d" conversion above)
-  // altı --> altıncı
-  // etc.
-  let ordinal-part = if ends-with-vowel {
-    ""
-  } else {
-    ordinal-vowel
-  } + "nc" + ordinal-vowel
+      + "nc"
+      + ordinal-vowel
+  )
 
   return cardinal + ordinal-part
 }
@@ -229,17 +210,18 @@
 
 // Year helpers.
 
-/// Converts a positive integer to its year reading form.
+/// Converts a positive integer to its year reading form. Turkish reads years as plain cardinals, so 1999 is
+/// "bin dokuz yüz doksan dokuz".
 ///
 /// - number (int): The number to convert (>= 1).
 /// -> str
 #let _convert-year(number) = {
-  return _convert-cardinal(number)
+  _convert-cardinal(number)
 }
 
 // Public entry point.
 
-/// Converts a number to its English word form.
+/// Converts a number to its Turkish word form.
 ///
 /// - number (int): The number to convert.
 /// - form (str): The form: `"cardinal"`, `"ordinal"`, or `"year"` (default: `"cardinal"`).
@@ -268,4 +250,4 @@
     }
     prefix + result
   }
-} 
+}
