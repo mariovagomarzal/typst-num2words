@@ -66,9 +66,12 @@
 
 /// Converts a number in the range 1–99 to its cardinal word form.
 ///
-/// - number (int): The number to convert (1–99).
 /// -> str
-#let _convert-below-100(number) = {
+#let _convert-below-100(
+  /// The number to convert (1–99).
+  /// -> int
+  number,
+) = {
   if number < 10 {
     _units.at(number)
   } else {
@@ -84,9 +87,12 @@
 
 /// Converts a number in the range 1–999 to its cardinal word form.
 ///
-/// - number (int): The number to convert (1–999).
 /// -> str
-#let _convert-below-1000(number) = {
+#let _convert-below-1000(
+  /// The number to convert (1–999).
+  /// -> int
+  number,
+) = {
   if number < 100 {
     _convert-below-100(number)
   } else {
@@ -114,10 +120,15 @@
 /// Recursively splits a number into 3-digit chunks and converts each chunk,
 /// appending the appropriate scale word.
 ///
-/// - number (int): The remaining number to convert.
-/// - scale-index (int): The current scale index (0 = units, 1 = thousands, etc.).
 /// -> array
-#let _chunk-and-convert(number, scale-index) = {
+#let _chunk-and-convert(
+  /// The remaining number to convert.
+  /// -> int
+  number,
+  /// The current scale index (0 = units, 1 = thousands, etc.).
+  /// -> int
+  scale-index,
+) = {
   if number == 0 {
     ()
   } else {
@@ -143,9 +154,12 @@
 
 /// Converts a positive integer to its cardinal word form.
 ///
-/// - number (int): The number to convert (>= 1).
 /// -> str
-#let _convert-cardinal(number) = {
+#let _convert-cardinal(
+  /// The number to convert (>= 1).
+  /// -> int
+  number,
+) = {
   _chunk-and-convert(number, 0).join(" ")
 }
 
@@ -169,9 +183,12 @@
 /// Transforms a full cardinal string into its ordinal form by ordinalizing
 /// according to the last letter and last vowel.
 ///
-/// - cardinal (str): The cardinal string to transform.
 /// -> str
-#let _cardinal-to-ordinal(cardinal) = {
+#let _cardinal-to-ordinal(
+  /// The cardinal string to transform.
+  /// -> str
+  cardinal,
+) = {
   let all-letters = cardinal.clusters()
   let last-letter = all-letters.last()
 
@@ -201,9 +218,12 @@
 
 /// Converts a positive integer to its ordinal word form.
 ///
-/// - number (int): The number to convert (>= 1).
 /// -> str
-#let _convert-ordinal(number) = {
+#let _convert-ordinal(
+  /// The number to convert (>= 1).
+  /// -> int
+  number,
+) = {
   let cardinal = _convert-cardinal(number)
   _cardinal-to-ordinal(cardinal)
 }
@@ -213,9 +233,12 @@
 /// Converts a positive integer to its year reading form. Turkish reads years as plain cardinals, so 1999 is
 /// "bin dokuz yüz doksan dokuz".
 ///
-/// - number (int): The number to convert (>= 1).
 /// -> str
-#let _convert-year(number) = {
+#let _convert-year(
+  /// The number to convert (>= 1).
+  /// -> int
+  number,
+) = {
   _convert-cardinal(number)
 }
 
@@ -223,11 +246,18 @@
 
 /// Converts a number to its Turkish word form.
 ///
-/// - number (int): The number to convert.
-/// - form (str): The form: `"cardinal"`, `"ordinal"`, or `"year"` (default: `"cardinal"`).
-/// - negative (str): The prefix for negative numbers (default: `"eksi"`).
 /// -> str
-#let convert(number, form: "cardinal", negative: "eksi") = {
+#let convert(
+  /// The number to convert.
+  /// -> int
+  number,
+  /// The form: `"cardinal"`, `"ordinal"`, or `"year"` (default: `"cardinal"`).
+  /// -> str
+  form: "cardinal",
+  /// The prefix for negative numbers (default: `"eksi"`).
+  /// -> str
+  negative: "eksi",
+) = {
   errors.assert-type("form", str, form, lang: _lang-code)
   errors.assert-option("form", form, _supported-forms, lang: _lang-code)
   errors.assert-type("negative", str, negative, lang: _lang-code)

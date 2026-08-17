@@ -3,7 +3,6 @@
 #let show-module(name, ..tidy-args) = tidy-module(
   name,
   read("../src/" + name + ".typ"),
-  legacy-parser: true,
   ..tidy-args.named(),
 )
 

@@ -31,13 +31,21 @@
 
 /// Converts a number to its written word form.
 ///
-/// - number (int): The number to convert.
-/// - lang (str, auto): The language code (e.g., `"en"`). When `auto`, uses the current `text.lang`.
-/// - fallback (str, none, array): The fallback chain, where `none` can be used to return an empty result instead of
-///   panicking.
-/// - ..args: Additional arguments forwarded to the language-specific converter.
 /// -> content
-#let num2words(number, lang: auto, fallback: none, ..args) = {
+#let num2words(
+  /// The number to convert.
+  /// -> int
+  number,
+  /// The language code (e.g., `"en"`). When `auto`, uses the current `text.lang`.
+  /// -> str | auto
+  lang: auto,
+  /// The fallback chain, where `none` can be used to return an empty result instead of panicking.
+  /// -> str | none | array
+  fallback: none,
+  /// Additional arguments forwarded to the language-specific converter.
+  /// -> any
+  ..args,
+) = {
   errors.assert-type("number", int, number)
   let chain = _normalize-fallback(fallback)
 
