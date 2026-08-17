@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(just test:*)",
+      "Bash(just ft:*)",
+      "Bash(just format-typst:*)",
+      "Bash(just docs:*)",
+      "Bash(just --list:*)",
+      "Bash(tt run:*)",
+      "Bash(tt list:*)",
+      "Bash(tt ls:*)",
+      "Bash(typst compile:*)",
+      "Bash(typstyle:*)"
+    ]
+  }
+}
