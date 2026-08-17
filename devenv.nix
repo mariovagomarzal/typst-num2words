@@ -5,6 +5,10 @@
 }: {
   env.GREET = "Typst num2words development environment";
 
+  # Tytanic publishes its flake outputs to this cache, so it doesn't have to be
+  # built from source. Its own `nixConfig` is ignored when it's used as an input.
+  cachix.pull = ["tytanic"];
+
   overlays = [
     (final: prev: {
       # Add Tytanic to Nixpkgs.
