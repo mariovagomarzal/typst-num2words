@@ -10,3 +10,5 @@ language-specific features.
 #include "langs/ca.typ"
 
 #include "langs/de.typ"
+
+#include "langs/tr.typ"
