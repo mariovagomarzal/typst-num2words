@@ -30,6 +30,18 @@ Check the [justfile](/justfile) for the full list of commands.
 This project follows [Conventional Commits][conventional-commits]. The convention is enforced by a
 [commitizen][commitizen] pre-commit hook, so make sure hooks are installed before committing.
 
+## Working with coding agents
+
+The repository ships configuration for [Claude Code][claude-code] and similar agents. Using one is entirely optional,
+and contributions written without them are just as welcome.
+
+- [CLAUDE.md](/CLAUDE.md) collects the conventions of the codebase: docstring syntax, error helpers, test layout. It is
+  plain prose, so it is worth a read even if you never use an agent.
+- `.claude/skills/add-language/` describes the full procedure for adding a language, including the edge cases every
+  language test is expected to cover.
+- `.claude/settings.json` pre-approves the usual test, format and build commands so they run without prompting. Keep
+  personal overrides in `.claude/settings.local.json`, which is ignored by Git.
+
 <!-- External links -->
 
 [issues]: https://github.com/mariovagomarzal/typst-num2words/issues
@@ -41,3 +53,4 @@ This project follows [Conventional Commits][conventional-commits]. The conventio
 [prek]: https://github.com/j178/prek
 [conventional-commits]: https://www.conventionalcommits.org/
 [commitizen]: https://commitizen-tools.github.io/commitizen/
+[claude-code]: https://docs.claude.com/en/docs/claude-code/overview
