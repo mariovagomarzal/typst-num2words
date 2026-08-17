@@ -3,12 +3,14 @@
 #import "langs/en.typ"
 #import "langs/es.typ"
 #import "langs/ca.typ"
+#import "langs/de.typ"
 #import "langs/tr.typ"
 
 #let converters = (
   en: en.convert,
   es: es.convert,
   ca: ca.convert,
+  de: de.convert,
   tr: tr.convert,
 )
 
