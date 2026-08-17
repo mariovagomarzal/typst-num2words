@@ -36,7 +36,7 @@ jobs:
           authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
           extraPullNames: devenv
       - name: Install devenv
-        run: nix profile install github:cachix/devenv/v2.0.6
+        run: nix profile install github:cachix/devenv/v2.2.2
       - name: Run package tests
         run: devenv shell -- just test
       - name: Build the manual
