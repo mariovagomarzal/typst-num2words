@@ -39,6 +39,7 @@ Other langugages might support additional parameters.
 | English (US) | `en` |
 | Spanish | `es` |
 | Catalan | `ca` |
+| German  | `de` |
 
 More languages are planned. Contributions are welcome!
 
