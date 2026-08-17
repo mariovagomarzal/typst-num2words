@@ -93,9 +93,12 @@
 
 /// Helper function to handle the "eins" to "ein" conversion used in compounds.
 ///
-/// - word (str): The word to process.
 /// -> str
-#let _handle-eins(word) = {
+#let _handle-eins(
+  /// The word to process.
+  /// -> str
+  word,
+) = {
   if word == "eins" {
     "ein"
   } else {
@@ -105,9 +108,12 @@
 
 /// Pluralize the scale
 ///
-/// - word (str): The word from scales to be pluralized
 /// -> str
-#let _pluralize-scale(word) = {
+#let _pluralize-scale(
+  /// The word from scales to be pluralized
+  /// -> str
+  word,
+) = {
   return if word.last() == "n" {
     word + "en"
   } else if word.last() == "e" {
@@ -121,9 +127,12 @@
 /// Converts a number in the range 1–99 to its cardinal word form.
 /// order: units + "und" + tens
 ///
-/// - number (int): The number to convert (1–99).
 /// -> str
-#let _convert-below-100(number) = {
+#let _convert-below-100(
+  /// The number to convert (1–99).
+  /// -> int
+  number,
+) = {
   if number == 1 {
     return "eins"
   } else if number < 20 {
@@ -144,9 +153,12 @@
 
 /// Converts a number in the range 1–999 to its cardinal word form.
 ///
-/// - number (int): The number to convert (1–999).
 /// -> str
-#let _convert-below-1000(number) = {
+#let _convert-below-1000(
+  /// The number to convert (1–999).
+  /// -> int
+  number,
+) = {
   if number < 100 {
     return _convert-below-100(number)
   } else {
@@ -166,9 +178,12 @@
 
 /// Converts a number in the range 1–999,999 to its cardinal word form.
 ///
-/// - number (int): The number to convert (1–999,999).
 /// -> str
-#let _convert-below-million(number) = {
+#let _convert-below-million(
+  /// The number to convert (1–999,999).
+  /// -> int
+  number,
+) = {
   let thousands = calc.quo(number, 1000)
   let below-thousands = calc.rem(number, 1000)
   return if (thousands == 0) {
@@ -185,9 +200,12 @@
 /// Converts a number upwards of 1,000,000
 // (until scale has no more entries)
 ///
-/// - number (int): The number to convert (1,000,000–10^63)
 /// -> str
-#let _convert-above-million(number) = {
+#let _convert-above-million(
+  /// The number to convert (1,000,000–10^63)
+  /// -> int
+  number,
+) = {
   let str-number = str(number)
   let len-digits = str-number.len()
   let highest-group-len = calc.rem(len-digits, 3)
@@ -238,9 +256,12 @@
 
 /// Converts a positive integer to its cardinal word form.
 ///
-/// - number (int): The number to convert (>= 1).
 /// -> str
-#let _convert-cardinal(number) = {
+#let _convert-cardinal(
+  /// The number to convert (>= 1).
+  /// -> int
+  number,
+) = {
   return _convert-above-million(number)
 }
 
@@ -248,9 +269,12 @@
 
 /// Converts a single cardinal word to its ordinal form.
 ///
-/// - word (str): The cardinal word to ordinalize.
 /// -> str
-#let _ordinalize(word) = {
+#let _ordinalize(
+  /// The cardinal word to ordinalize.
+  /// -> str
+  word,
+) = {
   return if word in _ordinal-irregulars {
     _ordinal-irregulars.at(word)
   } else if (
@@ -288,9 +312,12 @@
 /// Ordinalizes a single word, applying irregular cardinal endings (e.g. the
 /// "eins" in "einhunderteins" becoming "erste").
 ///
-/// - word (str): The word to ordinalize.
 /// -> str
-#let _ordinalize-last(word) = {
+#let _ordinalize-last(
+  /// The word to ordinalize.
+  /// -> str
+  word,
+) = {
   if word in _ordinal-irregulars {
     return _ordinal-irregulars.at(word)
   }
@@ -305,9 +332,12 @@
 /// Transforms a full cardinal string (below one million, so always a single
 /// word) into its ordinal form by ordinalizing its last (only) word.
 ///
-/// - cardinal (str): The cardinal string to transform.
 /// -> str
-#let _cardinal-to-ordinal(cardinal) = {
+#let _cardinal-to-ordinal(
+  /// The cardinal string to transform.
+  /// -> str
+  cardinal,
+) = {
   let tokens = cardinal.split(" ")
   let new-last = _ordinalize-last(tokens.last())
   return (tokens.slice(0, -1) + (new-last,)).join(" ")
@@ -317,9 +347,12 @@
 /// German writes such ordinals lowercase and as a single word (Duden K 65),
 /// so the scale nouns are lowercased and every space is removed.
 ///
-/// - cardinal (str): The cardinal string to transform.
 /// -> str
-#let _cardinal-to-ordinal-large(cardinal) = {
+#let _cardinal-to-ordinal-large(
+  /// The cardinal string to transform.
+  /// -> str
+  cardinal,
+) = {
   let tokens = lower(cardinal).split(" ")
 
   // A leading "eine" marks an exact one of the highest scale (e.g. one million);
@@ -342,9 +375,12 @@
 
 /// Converts a positive integer to its ordinal word form.
 ///
-/// - number (int): The number to convert (>= 1).
 /// -> str
-#let _convert-ordinal(number) = {
+#let _convert-ordinal(
+  /// The number to convert (>= 1).
+  /// -> int
+  number,
+) = {
   let cardinal = _convert-cardinal(number)
   return if number < 1000000 {
     _cardinal-to-ordinal(cardinal)
@@ -357,9 +393,12 @@
 
 /// Converts a positive integer to its year reading form.
 ///
-/// - number (int): The number to convert (>= 1).
 /// -> str
-#let _convert-year(number) = {
+#let _convert-year(
+  /// The number to convert (>= 1).
+  /// -> int
+  number,
+) = {
   let high = calc.quo(number, 100)
   let low = calc.rem(number, 100)
   return if high >= 20 or high < 11 {
@@ -377,11 +416,18 @@
 
 /// Converts a number to its German word form.
 ///
-/// - number (int): The number to convert.
-/// - form (str): The form: `"cardinal"`, `"ordinal"`, or `"year"` (default: `"cardinal"`).
-/// - negative (str): The prefix for negative numbers (default: `"negative"`).
 /// -> str
-#let convert(number, form: "cardinal", negative: "minus") = {
+#let convert(
+  /// The number to convert.
+  /// -> int
+  number,
+  /// The form: `"cardinal"`, `"ordinal"`, or `"year"` (default: `"cardinal"`).
+  /// -> str
+  form: "cardinal",
+  /// The prefix for negative numbers (default: `"negative"`).
+  /// -> str
+  negative: "minus",
+) = {
   errors.assert-type("form", str, form, lang: _lang-code)
   errors.assert-option("form", form, _supported-forms, lang: _lang-code)
   errors.assert-type("negative", str, negative, lang: _lang-code)
