@@ -24,10 +24,17 @@ jobs:
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - name: Install Nix
         uses: cachix/install-nix-action@19effe9fe722874e6d46dd7182e4b8b7a43c4a99 # v31.10.0
+      # Everything in the dev shell but Tytanic is already in `cache.nixos.org`;
+      # Tytanic isn't in Nixpkgs and so gets rebuilt from source on every run
+      # unless we push it somewhere ourselves. `devenv` stays as a pull-only
+      # cache because it serves the devenv CLI installed below.
       - name: Cache Nix store
         uses: cachix/cachix-action@3ba601ff5bbb07c7220846facfa2cd81eeee15a1 # v16
         with:
-          name: devenv
+          name: typst-num2words
+          # Absent on pull requests from forks, which then pull without pushing.
+          authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
+          extraPullNames: devenv
       - name: Install devenv
         run: nix profile install github:cachix/devenv/v2.0.6
       - name: Run package tests
