@@ -40,6 +40,7 @@ Other langugages might support additional parameters.
 | Spanish | `es` |
 | Catalan | `ca` |
 | German  | `de` |
+| Turkish | `tr` |
 
 More languages are planned. Contributions are welcome!
 
