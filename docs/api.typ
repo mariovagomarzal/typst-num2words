@@ -39,3 +39,7 @@
 === German
 
 #show-lang-module("de")
+
+=== Turkish
+
+#show-lang-module("tr")
