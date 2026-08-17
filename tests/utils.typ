@@ -2,23 +2,40 @@
 
 /// Builds a diagnostic message for a failed test case.
 ///
-/// - number (int): The input number.
-/// - args (arguments): Additional arguments forwarded to the converter.
-/// - got (str): The actual output.
-/// - expected (str): The expected output.
 /// -> str
-#let _failure-message(number, args, got, expected) = {
+#let _failure-message(
+  /// The input number.
+  /// -> int
+  number,
+  /// Additional arguments forwarded to the converter.
+  /// -> arguments
+  args,
+  /// The actual output.
+  /// -> str
+  got,
+  /// The expected output.
+  /// -> str
+  expected,
+) = {
   "convert(" + repr(number) + ", " + repr(args) + ") = " + repr(got) + ", expected " + repr(expected)
 }
 
 /// Asserts that a converter call produces the expected output, with a
 /// diagnostic message on failure.
-///
-/// - convert (function): The converter function to test.
-/// - number (int): The input number.
-/// - expected (str): The expected output.
-/// - args (arguments): Additional arguments forwarded to the converter.
-#let _assert-case(convert, number, expected, args) = {
+#let _assert-case(
+  /// The converter function to test.
+  /// -> function
+  convert,
+  /// The input number.
+  /// -> int
+  number,
+  /// The expected output.
+  /// -> str
+  expected,
+  /// Additional arguments forwarded to the converter.
+  /// -> arguments
+  args,
+) = {
   let got = convert(number, ..args)
   assert.eq(got, expected, message: _failure-message(number, args, got, expected))
 }
@@ -29,11 +46,17 @@
 /// `arguments` value merged with the top-level args for that case.
 /// Any additional arguments are forwarded to every converter call, which is
 /// useful for grouping cases that share the same options (e.g., `form`).
-///
-/// - convert (function): The converter function to test.
-/// - cases (array): An array of `(number, expected)` or `(number, expected, extra-args)` entries.
-/// - ..args: Additional arguments forwarded to every `convert` call.
-#let check(convert, cases, ..args) = {
+#let check(
+  /// The converter function to test.
+  /// -> function
+  convert,
+  /// An array of `(number, expected)` or `(number, expected, extra-args)` entries.
+  /// -> array
+  cases,
+  /// Additional arguments forwarded to every `convert` call.
+  /// -> any
+  ..args,
+) = {
   for case in cases {
     let number = case.at(0)
     let expected = case.at(1)
