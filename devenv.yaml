@@ -2,4 +2,7 @@ inputs:
   nixpkgs:
     url: github:cachix/devenv-nixpkgs/rolling
   tytanic:
-    url: github:typst-community/tytanic/v0.3.3
+    # Pinned to a `main` commit rather than the v0.4.1 tag: that tag's flake sets
+    # `env.RUSTFLAGS = null` on every platform but x86_64-linux, which stdenv
+    # rejects (fixed upstream in 4ba72b7). Move back to a tag once v0.4.2 ships.
+    url: github:typst-community/tytanic/5f98ca6cc38487af9544ae12b6927d03aeb2a8dc

@@ -14,10 +14,10 @@ context block, the error is not propagated to the caller, and instead the functi
 // Check that `num2words` fails when given an invalid `fallback` argument.
 #assert.eq(
   catch(() => num2words(1, lang: "en", fallback: 42)),
-  "panicked with: \"num2words: 'fallback' entries must be strings or `none`, got integer at index 0\"",
+  "panicked with: num2words: 'fallback' entries must be strings or `none`, got integer at index 0",
 )
 
 #assert.eq(
   catch(() => num2words(1, lang: "en", fallback: ("en", 1))),
-  "panicked with: \"num2words: 'fallback' entries must be strings or `none`, got integer at index 1\"",
+  "panicked with: num2words: 'fallback' entries must be strings or `none`, got integer at index 1",
 )
